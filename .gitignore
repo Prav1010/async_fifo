@@ -1,0 +1,8 @@
+sim/results/*
+!sim/results/waveforms.vcd
+synth/reports/*.log
+synth/reports/*.jou
+*.pb
+*.wdb
+.Xil/
+xsim.dir/
