@@ -1,0 +1,253 @@
+$date
+   Thu Aug 20 15:24:03 2026
+$end
+$version
+  2018.1
+$end
+$timescale
+  1ps
+$end
+$scope module async_fifo_tb $end
+$var reg 1 ! wr_clk $end
+$var reg 1 " wr_rst_n $end
+$var reg 1 # wr_en $end
+$var reg 8 $ wr_data [7:0] $end
+$var wire 1 % full $end
+$var wire 1 & almost_full $end
+$var reg 1 ' rd_clk $end
+$var reg 1 ( rd_rst_n $end
+$var reg 1 ) rd_en $end
+$var wire 8 * rd_data [7:0] $end
+$var wire 1 + empty $end
+$var wire 1 , almost_empty $end
+$var integer 32 - tests $end
+$var integer 32 . errors $end
+$var reg 8 / rd_val [7:0] $end
+$var integer 32 0 i $end
+$var parameter 32 1 DATA_WIDTH [31:0] $end
+$var parameter 32 2 DEPTH [31:0] $end
+$var parameter 32 3 ADDR_WIDTH [31:0] $end
+$scope module dut $end
+$var wire 1 4 wr_clk $end
+$var wire 1 5 wr_rst_n $end
+$var wire 1 6 wr_en $end
+$var wire 8 7 wr_data [7:0] $end
+$var wire 1 % full $end
+$var wire 1 & almost_full $end
+$var wire 1 8 rd_clk $end
+$var wire 1 9 rd_rst_n $end
+$var wire 1 : rd_en $end
+$var reg 8 ; rd_data [7:0] $end
+$var wire 1 + empty $end
+$var wire 1 , almost_empty $end
+$var wire 5 < wr_ptr_bin [4:0] $end
+$var wire 5 = wr_ptr_gray [4:0] $end
+$var wire 1 > wr_incr $end
+$var wire 5 ? rd_ptr_bin [4:0] $end
+$var wire 5 @ rd_ptr_gray [4:0] $end
+$var wire 1 A rd_incr $end
+$var wire 5 B rd_ptr_gray_sync [4:0] $end
+$var wire 5 C wr_ptr_gray_sync [4:0] $end
+$var parameter 32 D DATA_WIDTH [31:0] $end
+$var parameter 32 E DEPTH [31:0] $end
+$var parameter 32 F ADDR_WIDTH [31:0] $end
+$var parameter 32 G PTR_WIDTH [31:0] $end
+$scope module u_wr_ptr $end
+$var wire 1 4 clk $end
+$var wire 1 5 rst_n $end
+$var wire 1 > incr $end
+$var reg 5 H bin_ptr [4:0] $end
+$var reg 5 I gray_ptr [4:0] $end
+$var wire 5 J bin_next [4:0] $end
+$var wire 5 K gray_next [4:0] $end
+$var parameter 32 L ADDR_WIDTH [31:0] $end
+$upscope $end
+$scope module u_rd_ptr $end
+$var wire 1 8 clk $end
+$var wire 1 9 rst_n $end
+$var wire 1 A incr $end
+$var reg 5 M bin_ptr [4:0] $end
+$var reg 5 N gray_ptr [4:0] $end
+$var wire 5 O bin_next [4:0] $end
+$var wire 5 P gray_next [4:0] $end
+$var parameter 32 Q ADDR_WIDTH [31:0] $end
+$upscope $end
+$scope module u_sync_rd2wr $end
+$var wire 1 4 clk $end
+$var wire 1 5 rst_n $end
+$var wire 5 @ d_in [4:0] $end
+$var reg 5 R d_out [4:0] $end
+$var integer 32 S i $end
+$var parameter 32 T WIDTH [31:0] $end
+$var parameter 32 U STAGES [31:0] $end
+$upscope $end
+$scope module u_sync_wr2rd $end
+$var wire 1 8 clk $end
+$var wire 1 9 rst_n $end
+$var wire 5 = d_in [4:0] $end
+$var reg 5 V d_out [4:0] $end
+$var integer 32 W i $end
+$var parameter 32 X WIDTH [31:0] $end
+$var parameter 32 Y STAGES [31:0] $end
+$upscope $end
+$scope module u_flags_wr $end
+$var wire 1 4 clk $end
+$var wire 1 5 rst_n $end
+$var wire 5 = wr_ptr_gray [4:0] $end
+$var wire 5 B rd_ptr_gray_sync [4:0] $end
+$var wire 5 @ rd_ptr_gray [4:0] $end
+$var wire 5 = wr_ptr_gray_sync [4:0] $end
+$var wire 1 % full $end
+$var wire 1 Z empty $end
+$var reg 1 [ almost_full $end
+$var reg 1 \ almost_empty $end
+$var wire 5 ] wr_bin [4:0] $end
+$var wire 5 ^ rd_bin_sync [4:0] $end
+$var wire 5 _ rd_bin [4:0] $end
+$var wire 5 ` wr_bin_sync [4:0] $end
+$var wire 5 a fill_level_wr [4:0] $end
+$var wire 5 b fill_level_rd [4:0] $end
+$var wire 1 c almost_full_comb $end
+$var wire 1 d almost_empty_comb $end
+$var parameter 32 e ADDR_WIDTH [31:0] $end
+$var parameter 32 f DEPTH [31:0] $end
+$var parameter 32 g ALMOST_MARGIN [31:0] $end
+$scope function gray2bin $end
+$var reg 5 h gray2bin [4:0] $end
+$var reg 5 i g [4:0] $end
+$var integer 32 j i $end
+$upscope $end
+$upscope $end
+$scope module u_flags_rd $end
+$var wire 1 8 clk $end
+$var wire 1 9 rst_n $end
+$var wire 5 @ wr_ptr_gray [4:0] $end
+$var wire 5 @ rd_ptr_gray_sync [4:0] $end
+$var wire 5 @ rd_ptr_gray [4:0] $end
+$var wire 5 C wr_ptr_gray_sync [4:0] $end
+$var wire 1 k full $end
+$var wire 1 + empty $end
+$var reg 1 l almost_full $end
+$var reg 1 m almost_empty $end
+$var wire 5 n wr_bin [4:0] $end
+$var wire 5 o rd_bin_sync [4:0] $end
+$var wire 5 p rd_bin [4:0] $end
+$var wire 5 q wr_bin_sync [4:0] $end
+$var wire 5 r fill_level_wr [4:0] $end
+$var wire 5 s fill_level_rd [4:0] $end
+$var wire 1 t almost_full_comb $end
+$var wire 1 u almost_empty_comb $end
+$var parameter 32 v ADDR_WIDTH [31:0] $end
+$var parameter 32 w DEPTH [31:0] $end
+$var parameter 32 x ALMOST_MARGIN [31:0] $end
+$scope function gray2bin $end
+$var reg 5 y gray2bin [4:0] $end
+$var reg 5 z g [4:0] $end
+$var integer 32 { i $end
+$upscope $end
+$upscope $end
+$upscope $end
+$scope task do_write $end
+$upscope $end
+$scope task do_read $end
+$upscope $end
+$scope task check_equal $end
+$upscope $end
+$scope task check_flag $end
+$upscope $end
+$upscope $end
+$enddefinitions $end
+#0
+$dumpvars
+0!
+1"
+0#
+b110011 $
+0%
+0&
+0'
+1(
+0)
+b110011 *
+1+
+1,
+b11010 -
+b0 .
+b110011 /
+b1110 0
+b1000 1
+b10000 2
+b100 3
+04
+15
+06
+b110011 7
+08
+19
+0:
+b110011 ;
+b1 <
+b1 =
+0>
+b1 ?
+b1 @
+0A
+b1 B
+b1 C
+b1000 D
+b10000 E
+b100 F
+b101 G
+b1 H
+b1 I
+b1 J
+b1 K
+b101 L
+b1 M
+b1 N
+b1 O
+b1 P
+b101 Q
+b1 R
+b10 S
+b101 T
+b10 U
+b1 V
+b10 W
+b101 X
+b10 Y
+1Z
+0[
+1\
+b1 ]
+b1 ^
+b1 _
+b1 `
+b0 a
+b0 b
+0c
+1d
+b101 e
+b10000 f
+b10 g
+b1 h
+b1 i
+b11111111111111111111111111111111 j
+0k
+0l
+1m
+b1 n
+b1 o
+b1 p
+b1 q
+b0 r
+b0 s
+0t
+1u
+b101 v
+b10000 w
+b10 x
+b1 y
+b1 z
+b11111111111111111111111111111111 {
+$end

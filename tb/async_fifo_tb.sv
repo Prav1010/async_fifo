@@ -66,8 +66,6 @@ module async_fifo_tb;
     integer i;
 
     initial begin
-        
-                  $time, rd_en, dut.rd_incr, dut.wr_ptr_gray, dut.rd_ptr_gray, dut.wr_ptr_gray_sync, almost_empty, empty); 
                 // Init
         wr_clk   = 0;
         rd_clk   = 0;

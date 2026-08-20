@@ -6,3 +6,6 @@ synth/reports/*.jou
 *.wdb
 .Xil/
 xsim.dir/
+rtl_dump.txt
+sim/full_log.txt
+sim/isolated_test/
