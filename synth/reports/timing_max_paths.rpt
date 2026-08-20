@@ -1,0 +1,244 @@
+Copyright 1986-2018 Xilinx, Inc. All Rights Reserved.
+--------------------------------------------------------------------------------------------------
+| Tool Version : Vivado v.2018.1 (win64) Build 2188600 Wed Apr  4 18:40:38 MDT 2018
+| Date         : Thu Aug 20 15:29:14 2026
+| Host         : Prav11 running 64-bit major release  (build 9200)
+| Command      : report_timing -delay_type max -max_paths 10 -file ./reports/timing_max_paths.rpt
+| Design       : async_fifo
+| Device       : 7a35t-cpg236
+| Speed File   : -1  PRODUCTION 1.21 2018-02-08
+--------------------------------------------------------------------------------------------------
+
+Timing Report
+
+Slack:                    inf
+  Source:                 u_wr_ptr/gray_ptr_reg[4]/C
+                            (rising edge-triggered cell FDCE)
+  Destination:            full
+                            (output port)
+  Path Group:             (none)
+  Path Type:              Max at Slow Process Corner
+  Data Path Delay:        3.305ns  (logic 0.875ns (26.475%)  route 2.430ns (73.525%))
+  Logic Levels:           3  (FDCE=1 LUT5=1 LUT6=1)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         FDCE                         0.000     0.000 r  u_wr_ptr/gray_ptr_reg[4]/C
+                         FDCE (Prop_fdce_C_Q)         0.456     0.456 r  u_wr_ptr/gray_ptr_reg[4]/Q
+                         net (fo=6, unplaced)         0.997     1.453    u_wr_ptr/wr_ptr_gray[4]
+                         LUT6 (Prop_lut6_I0_O)        0.295     1.748 r  u_wr_ptr/full_INST_0_i_1/O
+                         net (fo=2, unplaced)         0.460     2.208    u_wr_ptr/full_INST_0_i_1_n_0
+                         LUT5 (Prop_lut5_I0_O)        0.124     2.332 r  u_wr_ptr/full_INST_0/O
+                         net (fo=0)                   0.973     3.305    full
+                                                                      r  full (OUT)
+  -------------------------------------------------------------------    -------------------
+
+Slack:                    inf
+  Source:                 u_rd_ptr/gray_ptr_reg[0]/C
+                            (rising edge-triggered cell FDCE)
+  Destination:            empty
+                            (output port)
+  Path Group:             (none)
+  Path Type:              Max at Slow Process Corner
+  Data Path Delay:        3.297ns  (logic 0.875ns (26.539%)  route 2.422ns (73.461%))
+  Logic Levels:           3  (FDCE=1 LUT5=1 LUT6=1)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         FDCE                         0.000     0.000 r  u_rd_ptr/gray_ptr_reg[0]/C
+                         FDCE (Prop_fdce_C_Q)         0.456     0.456 r  u_rd_ptr/gray_ptr_reg[0]/Q
+                         net (fo=4, unplaced)         0.989     1.445    u_rd_ptr/rd_ptr_gray[0]
+                         LUT6 (Prop_lut6_I0_O)        0.295     1.740 r  u_rd_ptr/empty_INST_0_i_1/O
+                         net (fo=2, unplaced)         0.460     2.200    u_rd_ptr/empty_INST_0_i_1_n_0
+                         LUT5 (Prop_lut5_I2_O)        0.124     2.324 r  u_rd_ptr/empty_INST_0/O
+                         net (fo=0)                   0.973     3.297    empty
+                                                                      r  empty (OUT)
+  -------------------------------------------------------------------    -------------------
+
+Slack:                    inf
+  Source:                 u_wr_ptr/gray_ptr_reg[4]/C
+                            (rising edge-triggered cell FDCE)
+  Destination:            u_wr_ptr/bin_ptr_reg[0]/D
+  Path Group:             (none)
+  Path Type:              Max at Slow Process Corner
+  Data Path Delay:        2.970ns  (logic 0.999ns (33.636%)  route 1.971ns (66.364%))
+  Logic Levels:           4  (FDCE=1 LUT2=1 LUT6=2)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         FDCE                         0.000     0.000 r  u_wr_ptr/gray_ptr_reg[4]/C
+                         FDCE (Prop_fdce_C_Q)         0.456     0.456 r  u_wr_ptr/gray_ptr_reg[4]/Q
+                         net (fo=6, unplaced)         0.997     1.453    u_wr_ptr/wr_ptr_gray[4]
+                         LUT6 (Prop_lut6_I0_O)        0.295     1.748 f  u_wr_ptr/full_INST_0_i_1/O
+                         net (fo=2, unplaced)         0.460     2.208    u_wr_ptr/full_INST_0_i_1_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124     2.332 r  u_wr_ptr/mem_reg_0_15_0_5_i_1/O
+                         net (fo=25, unplaced)        0.514     2.846    u_wr_ptr/wr_incr
+                         LUT2 (Prop_lut2_I1_O)        0.124     2.970 r  u_wr_ptr/bin_ptr[0]_i_1/O
+                         net (fo=1, unplaced)         0.000     2.970    u_wr_ptr/bin_next[0]
+                         FDCE                                         r  u_wr_ptr/bin_ptr_reg[0]/D
+  -------------------------------------------------------------------    -------------------
+
+Slack:                    inf
+  Source:                 u_wr_ptr/gray_ptr_reg[4]/C
+                            (rising edge-triggered cell FDCE)
+  Destination:            u_wr_ptr/gray_ptr_reg[0]/D
+  Path Group:             (none)
+  Path Type:              Max at Slow Process Corner
+  Data Path Delay:        2.970ns  (logic 0.999ns (33.636%)  route 1.971ns (66.364%))
+  Logic Levels:           4  (FDCE=1 LUT3=1 LUT6=2)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         FDCE                         0.000     0.000 r  u_wr_ptr/gray_ptr_reg[4]/C
+                         FDCE (Prop_fdce_C_Q)         0.456     0.456 r  u_wr_ptr/gray_ptr_reg[4]/Q
+                         net (fo=6, unplaced)         0.997     1.453    u_wr_ptr/wr_ptr_gray[4]
+                         LUT6 (Prop_lut6_I0_O)        0.295     1.748 f  u_wr_ptr/full_INST_0_i_1/O
+                         net (fo=2, unplaced)         0.460     2.208    u_wr_ptr/full_INST_0_i_1_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124     2.332 r  u_wr_ptr/mem_reg_0_15_0_5_i_1/O
+                         net (fo=25, unplaced)        0.514     2.846    u_wr_ptr/wr_incr
+                         LUT3 (Prop_lut3_I1_O)        0.124     2.970 r  u_wr_ptr/gray_ptr[0]_i_1/O
+                         net (fo=1, unplaced)         0.000     2.970    u_wr_ptr/gray_next[0]
+                         FDCE                                         r  u_wr_ptr/gray_ptr_reg[0]/D
+  -------------------------------------------------------------------    -------------------
+
+Slack:                    inf
+  Source:                 u_wr_ptr/gray_ptr_reg[4]/C
+                            (rising edge-triggered cell FDCE)
+  Destination:            u_wr_ptr/gray_ptr_reg[1]/D
+  Path Group:             (none)
+  Path Type:              Max at Slow Process Corner
+  Data Path Delay:        2.970ns  (logic 0.999ns (33.636%)  route 1.971ns (66.364%))
+  Logic Levels:           4  (FDCE=1 LUT4=1 LUT6=2)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         FDCE                         0.000     0.000 r  u_wr_ptr/gray_ptr_reg[4]/C
+                         FDCE (Prop_fdce_C_Q)         0.456     0.456 r  u_wr_ptr/gray_ptr_reg[4]/Q
+                         net (fo=6, unplaced)         0.997     1.453    u_wr_ptr/wr_ptr_gray[4]
+                         LUT6 (Prop_lut6_I0_O)        0.295     1.748 f  u_wr_ptr/full_INST_0_i_1/O
+                         net (fo=2, unplaced)         0.460     2.208    u_wr_ptr/full_INST_0_i_1_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124     2.332 r  u_wr_ptr/mem_reg_0_15_0_5_i_1/O
+                         net (fo=25, unplaced)        0.514     2.846    u_wr_ptr/wr_incr
+                         LUT4 (Prop_lut4_I3_O)        0.124     2.970 r  u_wr_ptr/gray_ptr[1]_i_1/O
+                         net (fo=1, unplaced)         0.000     2.970    u_wr_ptr/gray_next[1]
+                         FDCE                                         r  u_wr_ptr/gray_ptr_reg[1]/D
+  -------------------------------------------------------------------    -------------------
+
+Slack:                    inf
+  Source:                 u_wr_ptr/gray_ptr_reg[4]/C
+                            (rising edge-triggered cell FDCE)
+  Destination:            u_wr_ptr/gray_ptr_reg[2]/D
+  Path Group:             (none)
+  Path Type:              Max at Slow Process Corner
+  Data Path Delay:        2.970ns  (logic 0.999ns (33.636%)  route 1.971ns (66.364%))
+  Logic Levels:           4  (FDCE=1 LUT5=1 LUT6=2)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         FDCE                         0.000     0.000 r  u_wr_ptr/gray_ptr_reg[4]/C
+                         FDCE (Prop_fdce_C_Q)         0.456     0.456 r  u_wr_ptr/gray_ptr_reg[4]/Q
+                         net (fo=6, unplaced)         0.997     1.453    u_wr_ptr/wr_ptr_gray[4]
+                         LUT6 (Prop_lut6_I0_O)        0.295     1.748 f  u_wr_ptr/full_INST_0_i_1/O
+                         net (fo=2, unplaced)         0.460     2.208    u_wr_ptr/full_INST_0_i_1_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124     2.332 r  u_wr_ptr/mem_reg_0_15_0_5_i_1/O
+                         net (fo=25, unplaced)        0.514     2.846    u_wr_ptr/wr_incr
+                         LUT5 (Prop_lut5_I2_O)        0.124     2.970 r  u_wr_ptr/gray_ptr[2]_i_1/O
+                         net (fo=1, unplaced)         0.000     2.970    u_wr_ptr/gray_next[2]
+                         FDCE                                         r  u_wr_ptr/gray_ptr_reg[2]/D
+  -------------------------------------------------------------------    -------------------
+
+Slack:                    inf
+  Source:                 u_wr_ptr/gray_ptr_reg[4]/C
+                            (rising edge-triggered cell FDCE)
+  Destination:            u_wr_ptr/gray_ptr_reg[3]/D
+  Path Group:             (none)
+  Path Type:              Max at Slow Process Corner
+  Data Path Delay:        2.970ns  (logic 0.999ns (33.636%)  route 1.971ns (66.364%))
+  Logic Levels:           4  (FDCE=1 LUT6=3)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         FDCE                         0.000     0.000 r  u_wr_ptr/gray_ptr_reg[4]/C
+                         FDCE (Prop_fdce_C_Q)         0.456     0.456 r  u_wr_ptr/gray_ptr_reg[4]/Q
+                         net (fo=6, unplaced)         0.997     1.453    u_wr_ptr/wr_ptr_gray[4]
+                         LUT6 (Prop_lut6_I0_O)        0.295     1.748 f  u_wr_ptr/full_INST_0_i_1/O
+                         net (fo=2, unplaced)         0.460     2.208    u_wr_ptr/full_INST_0_i_1_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124     2.332 r  u_wr_ptr/mem_reg_0_15_0_5_i_1/O
+                         net (fo=25, unplaced)        0.514     2.846    u_wr_ptr/wr_incr
+                         LUT6 (Prop_lut6_I4_O)        0.124     2.970 r  u_wr_ptr/gray_ptr[3]_i_1/O
+                         net (fo=1, unplaced)         0.000     2.970    u_wr_ptr/gray_next[3]
+                         FDCE                                         r  u_wr_ptr/gray_ptr_reg[3]/D
+  -------------------------------------------------------------------    -------------------
+
+Slack:                    inf
+  Source:                 u_wr_ptr/gray_ptr_reg[4]/C
+                            (rising edge-triggered cell FDCE)
+  Destination:            u_wr_ptr/gray_ptr_reg[4]/D
+  Path Group:             (none)
+  Path Type:              Max at Slow Process Corner
+  Data Path Delay:        2.970ns  (logic 0.999ns (33.636%)  route 1.971ns (66.364%))
+  Logic Levels:           4  (FDCE=1 LUT6=3)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         FDCE                         0.000     0.000 r  u_wr_ptr/gray_ptr_reg[4]/C
+                         FDCE (Prop_fdce_C_Q)         0.456     0.456 r  u_wr_ptr/gray_ptr_reg[4]/Q
+                         net (fo=6, unplaced)         0.997     1.453    u_wr_ptr/wr_ptr_gray[4]
+                         LUT6 (Prop_lut6_I0_O)        0.295     1.748 f  u_wr_ptr/full_INST_0_i_1/O
+                         net (fo=2, unplaced)         0.460     2.208    u_wr_ptr/full_INST_0_i_1_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124     2.332 r  u_wr_ptr/mem_reg_0_15_0_5_i_1/O
+                         net (fo=25, unplaced)        0.514     2.846    u_wr_ptr/wr_incr
+                         LUT6 (Prop_lut6_I1_O)        0.124     2.970 r  u_wr_ptr/gray_ptr[4]_i_1/O
+                         net (fo=1, unplaced)         0.000     2.970    u_wr_ptr/bin_next__0[4]
+                         FDCE                                         r  u_wr_ptr/gray_ptr_reg[4]/D
+  -------------------------------------------------------------------    -------------------
+
+Slack:                    inf
+  Source:                 u_wr_ptr/gray_ptr_reg[4]/C
+                            (rising edge-triggered cell FDCE)
+  Destination:            u_wr_ptr/bin_ptr_reg[1]/D
+  Path Group:             (none)
+  Path Type:              Max at Slow Process Corner
+  Data Path Delay:        2.964ns  (logic 0.993ns (33.502%)  route 1.971ns (66.498%))
+  Logic Levels:           4  (FDCE=1 LUT3=1 LUT6=2)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         FDCE                         0.000     0.000 r  u_wr_ptr/gray_ptr_reg[4]/C
+                         FDCE (Prop_fdce_C_Q)         0.456     0.456 r  u_wr_ptr/gray_ptr_reg[4]/Q
+                         net (fo=6, unplaced)         0.997     1.453    u_wr_ptr/wr_ptr_gray[4]
+                         LUT6 (Prop_lut6_I0_O)        0.295     1.748 f  u_wr_ptr/full_INST_0_i_1/O
+                         net (fo=2, unplaced)         0.460     2.208    u_wr_ptr/full_INST_0_i_1_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124     2.332 r  u_wr_ptr/mem_reg_0_15_0_5_i_1/O
+                         net (fo=25, unplaced)        0.514     2.846    u_wr_ptr/wr_incr
+                         LUT3 (Prop_lut3_I1_O)        0.118     2.964 r  u_wr_ptr/bin_ptr[1]_i_1/O
+                         net (fo=1, unplaced)         0.000     2.964    u_wr_ptr/bin_next[1]
+                         FDCE                                         r  u_wr_ptr/bin_ptr_reg[1]/D
+  -------------------------------------------------------------------    -------------------
+
+Slack:                    inf
+  Source:                 u_wr_ptr/gray_ptr_reg[4]/C
+                            (rising edge-triggered cell FDCE)
+  Destination:            u_wr_ptr/bin_ptr_reg[2]/D
+  Path Group:             (none)
+  Path Type:              Max at Slow Process Corner
+  Data Path Delay:        2.964ns  (logic 0.993ns (33.502%)  route 1.971ns (66.498%))
+  Logic Levels:           4  (FDCE=1 LUT4=1 LUT6=2)
+
+    Location             Delay type                Incr(ns)  Path(ns)    Netlist Resource(s)
+  -------------------------------------------------------------------    -------------------
+                         FDCE                         0.000     0.000 r  u_wr_ptr/gray_ptr_reg[4]/C
+                         FDCE (Prop_fdce_C_Q)         0.456     0.456 r  u_wr_ptr/gray_ptr_reg[4]/Q
+                         net (fo=6, unplaced)         0.997     1.453    u_wr_ptr/wr_ptr_gray[4]
+                         LUT6 (Prop_lut6_I0_O)        0.295     1.748 f  u_wr_ptr/full_INST_0_i_1/O
+                         net (fo=2, unplaced)         0.460     2.208    u_wr_ptr/full_INST_0_i_1_n_0
+                         LUT6 (Prop_lut6_I5_O)        0.124     2.332 r  u_wr_ptr/mem_reg_0_15_0_5_i_1/O
+                         net (fo=25, unplaced)        0.514     2.846    u_wr_ptr/wr_incr
+                         LUT4 (Prop_lut4_I0_O)        0.118     2.964 r  u_wr_ptr/bin_ptr[2]_i_1/O
+                         net (fo=1, unplaced)         0.000     2.964    u_wr_ptr/bin_next[2]
+                         FDCE                                         r  u_wr_ptr/bin_ptr_reg[2]/D
+  -------------------------------------------------------------------    -------------------
+
+
+
+
