@@ -66,11 +66,13 @@ module async_fifo_tb;
     integer i;
 
     initial begin
-        // Init
+        
+                  $time, rd_en, dut.rd_incr, dut.wr_ptr_gray, dut.rd_ptr_gray, dut.wr_ptr_gray_sync, almost_empty, empty); 
+                // Init
         wr_clk   = 0;
         rd_clk   = 0;
-        wr_rst_n = 0;
-        rd_rst_n = 0;
+        wr_rst_n = 1;   // start high so the reset pulse below creates a real negedge
+        rd_rst_n = 1;
         wr_en    = 0;
         rd_en    = 0;
         wr_data  = 0;
@@ -78,10 +80,18 @@ module async_fifo_tb;
         // -----------------------------------------------------------
         // Test 1: Reset behavior
         // -----------------------------------------------------------
+        #10;
+        wr_rst_n = 0;   // real negedge occurs here
+        rd_rst_n = 0;
+        #20;
+        wr_rst_n = 1;   // release reset
+        rd_rst_n = 1;
         #20;
         wr_rst_n = 1;
         rd_rst_n = 1;
         #20;
+                $display("DEBUG @ %0t: wr_rst_n=%b rd_rst_n=%b wr_ptr_gray=%h rd_ptr_gray_sync=%h rd_ptr_gray=%h wr_ptr_gray_sync=%h full=%b empty=%b",
+                  $time, wr_rst_n, rd_rst_n, dut.wr_ptr_gray, dut.rd_ptr_gray_sync, dut.rd_ptr_gray, dut.wr_ptr_gray_sync, full, empty);
         check_flag(empty, 1'b1, "Test1_ResetEmpty");
         check_flag(full,  1'b0, "Test1_ResetNotFull");
 
@@ -149,9 +159,11 @@ module async_fifo_tb;
         // -----------------------------------------------------------
         // Test 8: Almost-empty flag - after draining to within margin of empty
         // -----------------------------------------------------------
-        do_write(8'h22);
+                do_write(8'h22);
         do_write(8'h33);
-        #30;
+        repeat (10) @(posedge rd_clk);
+        #1;
+               
         check_flag(almost_empty, 1'b1, "Test8_AlmostEmptyNearBottom");
         do_read(rd_val);
         do_read(rd_val);

@@ -1,0 +1,288 @@
+===== cdc_sync.v =====
+     1	`timescale 1ns/1ps
+     2	
+     3	// Multi-flop synchronizer for crossing clock domains
+     4	// Used to synchronize Gray-coded pointers between write and read clock domains
+     5	module cdc_sync #(
+     6	    parameter WIDTH   = 4,   // width of signal being synchronized
+     7	    parameter STAGES  = 2    // number of sync flops (2 minimum, 3 for high-risk designs)
+     8	)(
+     9	    input  wire                  clk,     // destination clock domain
+    10	    input  wire                  rst_n,   // active-low async reset
+    11	    input  wire [WIDTH-1:0]      d_in,    // signal from source domain
+    12	    output reg  [WIDTH-1:0]      d_out    // synchronized signal in destination domain
+    13	);
+    14	
+    15	    reg [WIDTH-1:0] sync_ff [0:STAGES-1];
+    16	    integer i;
+    17	
+    18	    always @(posedge clk or negedge rst_n) begin
+    19	        if (!rst_n) begin
+    20	            for (i = 0; i < STAGES; i = i + 1)
+    21	                sync_ff[i] <= {WIDTH{1'b0}};
+    22	        end else begin
+    23	            sync_ff[0] <= d_in;
+    24	            for (i = 1; i < STAGES; i = i + 1)
+    25	                sync_ff[i] <= sync_ff[i-1];
+    26	        end
+    27	    end
+    28	
+    29	    always @(*) begin
+    30	        d_out = sync_ff[STAGES-1];
+    31	    end
+    32	
+    33	endmodule
+===== fifo_ptr.v =====
+     1	`timescale 1ns/1ps
+     2	
+     3	// Gray-code pointer generator
+     4	// Maintains a binary pointer (for memory addressing) and its Gray-coded
+     5	// equivalent (for safe clock-domain-crossing comparison).
+     6	// Only one bit of a Gray code changes between consecutive values, which
+     7	// eliminates the risk of a synchronizer capturing a transient multi-bit
+     8	// glitch value when crossing clock domains.
+     9	module fifo_ptr #(
+    10	    parameter ADDR_WIDTH = 4   // pointer width = log2(DEPTH) + 1 (extra MSB for full/empty distinction)
+    11	)(
+    12	    input  wire                     clk,
+    13	    input  wire                     rst_n,
+    14	    input  wire                     incr,        // pulse to advance pointer by 1
+    15	    output reg  [ADDR_WIDTH-1:0]    bin_ptr,      // binary pointer (used to address memory)
+    16	    output reg  [ADDR_WIDTH-1:0]    gray_ptr      // gray-coded pointer (used for CDC)
+    17	);
+    18	
+    19	    wire [ADDR_WIDTH-1:0] bin_next;
+    20	    wire [ADDR_WIDTH-1:0] gray_next;
+    21	
+    22	    assign bin_next  = bin_ptr + (incr ? 1'b1 : 1'b0);
+    23	    assign gray_next = (bin_next >> 1) ^ bin_next;  // binary-to-gray conversion
+    24	
+    25	    always @(posedge clk or negedge rst_n) begin
+    26	        if (!rst_n) begin
+    27	            bin_ptr  <= {ADDR_WIDTH{1'b0}};
+    28	            gray_ptr <= {ADDR_WIDTH{1'b0}};
+    29	        end else begin
+    30	            bin_ptr  <= bin_next;
+    31	            gray_ptr <= gray_next;
+    32	        end
+    33	    end
+    34	
+    35	endmodule
+===== fifo_flags.v =====
+     1	`timescale 1ns/1ps
+     2	
+     3	// Flag generation logic for async FIFO
+     4	// Two instances are used: one in the write clock domain (full/almost_full),
+     5	// one in the read clock domain (empty/almost_empty).
+     6	// Comparisons use Gray-coded pointers already synchronized into the local domain.
+     7	module fifo_flags #(
+     8	    parameter ADDR_WIDTH   = 4,
+     9	    parameter DEPTH        = 16,
+    10	    parameter ALMOST_MARGIN = 2   // how many words before full/empty to assert almost_* flags
+    11	)(
+    12	    input  wire                     clk,
+    13	    input  wire                     rst_n,
+    14	    input  wire [ADDR_WIDTH-1:0]    wr_ptr_gray,       // local write pointer (gray)
+    15	    input  wire [ADDR_WIDTH-1:0]    rd_ptr_gray_sync,  // read pointer synced into write domain
+    16	    input  wire [ADDR_WIDTH-1:0]    rd_ptr_gray,       // local read pointer (gray)
+    17	    input  wire [ADDR_WIDTH-1:0]    wr_ptr_gray_sync,  // write pointer synced into read domain
+    18	    output reg                      full,
+    19	    output reg                      empty,
+    20	    output reg                      almost_full,
+    21	    output reg                      almost_empty
+    22	);
+    23	
+    24	    // Gray-to-binary conversion helpers (for computing fill level)
+    25	    function [ADDR_WIDTH-1:0] gray2bin;
+    26	        input [ADDR_WIDTH-1:0] g;
+    27	        integer i;
+    28	        begin
+    29	            gray2bin[ADDR_WIDTH-1] = g[ADDR_WIDTH-1];
+    30	            for (i = ADDR_WIDTH-2; i >= 0; i = i - 1)
+    31	                gray2bin[i] = gray2bin[i+1] ^ g[i];
+    32	        end
+    33	    endfunction
+    34	
+    35	    wire [ADDR_WIDTH-1:0] wr_bin       = gray2bin(wr_ptr_gray);
+    36	    wire [ADDR_WIDTH-1:0] rd_bin_sync  = gray2bin(rd_ptr_gray_sync);
+    37	    wire [ADDR_WIDTH-1:0] rd_bin       = gray2bin(rd_ptr_gray);
+    38	    wire [ADDR_WIDTH-1:0] wr_bin_sync  = gray2bin(wr_ptr_gray_sync);
+    39	
+    40	    // FULL: write pointer has wrapped exactly one more time than the
+    41	    // synchronized read pointer, and the lower bits match (classic Gray-code full condition)
+    42	    always @(*) begin
+    43	        full = (wr_ptr_gray == {~rd_ptr_gray_sync[ADDR_WIDTH-1:ADDR_WIDTH-2],
+    44	                                  rd_ptr_gray_sync[ADDR_WIDTH-3:0]});
+    45	    end
+    46	
+    47	    // EMPTY: read pointer has caught up exactly to the synchronized write pointer
+    48	    always @(*) begin
+    49	        empty = (rd_ptr_gray == wr_ptr_gray_sync);
+    50	    end
+    51	
+    52	    // ALMOST_FULL / ALMOST_EMPTY: based on fill-level estimate using synced pointers
+    53	    // Note: these are approximate since one side is always a cycle "stale" due to CDC latency
+    54	    always @(posedge clk or negedge rst_n) begin
+    55	        if (!rst_n) begin
+    56	            almost_full  <= 1'b0;
+    57	        end else begin
+    58	            almost_full <= ((wr_bin - rd_bin_sync) >= (DEPTH - ALMOST_MARGIN));
+    59	        end
+    60	    end
+    61	
+    62	    always @(posedge clk or negedge rst_n) begin
+    63	        if (!rst_n) begin
+    64	            almost_empty <= 1'b1;
+    65	        end else begin
+    66	            almost_empty <= ((wr_bin_sync - rd_bin) <= ALMOST_MARGIN);
+    67	        end
+    68	    end
+    69	
+    70	endmodule
+===== async_fifo.v =====
+     1	`timescale 1ns/1ps
+     2	
+     3	// Top-level Asynchronous (dual-clock) FIFO
+     4	// Write and read operate on independent clocks. Pointers are exchanged
+     5	// across clock domains as Gray code through multi-flop synchronizers to
+     6	// avoid metastability, per standard async FIFO design (Cummings, 2002).
+     7	module async_fifo #(
+     8	    parameter DATA_WIDTH = 8,
+     9	    parameter DEPTH      = 16,          // must be a power of 2
+    10	    parameter ADDR_WIDTH = 4            // = log2(DEPTH); pointers are ADDR_WIDTH+1 bits
+    11	)(
+    12	    // Write domain
+    13	    input  wire                     wr_clk,
+    14	    input  wire                     wr_rst_n,
+    15	    input  wire                     wr_en,
+    16	    input  wire [DATA_WIDTH-1:0]    wr_data,
+    17	    output wire                     full,
+    18	    output wire                     almost_full,
+    19	
+    20	    // Read domain
+    21	    input  wire                     rd_clk,
+    22	    input  wire                     rd_rst_n,
+    23	    input  wire                     rd_en,
+    24	    output reg  [DATA_WIDTH-1:0]    rd_data,
+    25	    output wire                     empty,
+    26	    output wire                     almost_empty
+    27	);
+    28	
+    29	    localparam PTR_WIDTH = ADDR_WIDTH + 1;  // extra MSB to distinguish full vs empty
+    30	
+    31	    // Memory array
+    32	    reg [DATA_WIDTH-1:0] mem [0:DEPTH-1];
+    33	
+    34	    // Write-domain pointer signals
+    35	    wire [PTR_WIDTH-1:0] wr_ptr_bin, wr_ptr_gray;
+    36	    wire wr_incr = wr_en & ~full;
+    37	
+    38	    // Read-domain pointer signals
+    39	    wire [PTR_WIDTH-1:0] rd_ptr_bin, rd_ptr_gray;
+    40	    wire rd_incr = rd_en & ~empty;
+    41	
+    42	    // Synchronized pointers (crossed into the opposite domain)
+    43	    wire [PTR_WIDTH-1:0] rd_ptr_gray_sync;  // read pointer, synced into write domain
+    44	    wire [PTR_WIDTH-1:0] wr_ptr_gray_sync;  // write pointer, synced into read domain
+    45	
+    46	    // ---------------------------------------------------------------
+    47	    // Write pointer generator (write clock domain)
+    48	    // ---------------------------------------------------------------
+    49	    fifo_ptr #(.ADDR_WIDTH(PTR_WIDTH)) u_wr_ptr (
+    50	        .clk      (wr_clk),
+    51	        .rst_n    (wr_rst_n),
+    52	        .incr     (wr_incr),
+    53	        .bin_ptr  (wr_ptr_bin),
+    54	        .gray_ptr (wr_ptr_gray)
+    55	    );
+    56	
+    57	    // ---------------------------------------------------------------
+    58	    // Read pointer generator (read clock domain)
+    59	    // ---------------------------------------------------------------
+    60	    fifo_ptr #(.ADDR_WIDTH(PTR_WIDTH)) u_rd_ptr (
+    61	        .clk      (rd_clk),
+    62	        .rst_n    (rd_rst_n),
+    63	        .incr     (rd_incr),
+    64	        .bin_ptr  (rd_ptr_bin),
+    65	        .gray_ptr (rd_ptr_gray)
+    66	    );
+    67	
+    68	    // ---------------------------------------------------------------
+    69	    // CDC: synchronize read pointer into write clock domain
+    70	    // ---------------------------------------------------------------
+    71	    cdc_sync #(.WIDTH(PTR_WIDTH), .STAGES(2)) u_sync_rd2wr (
+    72	        .clk    (wr_clk),
+    73	        .rst_n  (wr_rst_n),
+    74	        .d_in   (rd_ptr_gray),
+    75	        .d_out  (rd_ptr_gray_sync)
+    76	    );
+    77	
+    78	    // ---------------------------------------------------------------
+    79	    // CDC: synchronize write pointer into read clock domain
+    80	    // ---------------------------------------------------------------
+    81	    cdc_sync #(.WIDTH(PTR_WIDTH), .STAGES(2)) u_sync_wr2rd (
+    82	        .clk    (rd_clk),
+    83	        .rst_n  (rd_rst_n),
+    84	        .d_in   (wr_ptr_gray),
+    85	        .d_out  (wr_ptr_gray_sync)
+    86	    );
+    87	
+    88	    // ---------------------------------------------------------------
+    89	    // Flags (write-domain instance drives full/almost_full,
+    90	    //         read-domain instance drives empty/almost_empty)
+    91	    // ---------------------------------------------------------------
+    92	    fifo_flags #(
+    93	        .ADDR_WIDTH(PTR_WIDTH),
+    94	        .DEPTH(DEPTH),
+    95	        .ALMOST_MARGIN(2)
+    96	    ) u_flags_wr (
+    97	        .clk               (wr_clk),
+    98	        .rst_n             (wr_rst_n),
+    99	        .wr_ptr_gray       (wr_ptr_gray),
+   100	        .rd_ptr_gray_sync  (rd_ptr_gray_sync),
+   101	        .rd_ptr_gray       (rd_ptr_gray),        // unused on this side, tied for port match
+   102	        .wr_ptr_gray_sync  (wr_ptr_gray),         // unused on this side, tied for port match
+   103	        .full              (full),
+   104	        .empty             (),
+   105	        .almost_full       (almost_full),
+   106	        .almost_empty      ()
+   107	    );
+   108	
+   109	    fifo_flags #(
+   110	        .ADDR_WIDTH(PTR_WIDTH),
+   111	        .DEPTH(DEPTH),
+   112	        .ALMOST_MARGIN(2)
+   113	    ) u_flags_rd (
+   114	        .clk               (rd_clk),
+   115	        .rst_n             (rd_rst_n),
+   116	        .wr_ptr_gray       (rd_ptr_gray),         // unused on this side, tied for port match
+   117	        .rd_ptr_gray_sync  (rd_ptr_gray),         // unused on this side, tied for port match
+   118	        .rd_ptr_gray       (rd_ptr_gray),
+   119	        .wr_ptr_gray_sync  (wr_ptr_gray_sync),
+   120	        .full              (),
+   121	        .empty             (empty),
+   122	        .almost_full       (),
+   123	        .almost_empty      (almost_empty)
+   124	    );
+   125	
+   126	    // ---------------------------------------------------------------
+   127	    // Memory write (write clock domain)
+   128	    // ---------------------------------------------------------------
+   129	    always @(posedge wr_clk) begin
+   130	        if (wr_incr) begin
+   131	            mem[wr_ptr_bin[ADDR_WIDTH-1:0]] <= wr_data;
+   132	        end
+   133	    end
+   134	
+   135	    // ---------------------------------------------------------------
+   136	    // Memory read (read clock domain, registered output)
+   137	    // ---------------------------------------------------------------
+   138	    always @(posedge rd_clk or negedge rd_rst_n) begin
+   139	        if (!rd_rst_n) begin
+   140	            rd_data <= {DATA_WIDTH{1'b0}};
+   141	        end else if (rd_incr) begin
+   142	            rd_data <= mem[rd_ptr_bin[ADDR_WIDTH-1:0]];
+   143	        end
+   144	    end
+   145	
+   146	endmodule

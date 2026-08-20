@@ -1,0 +1,14 @@
+=== Compiling RTL ===
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/prave/async_fifo/rtl/cdc_sync.v" into library work
+INFO: [VRFC 10-311] analyzing module cdc_sync
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/prave/async_fifo/rtl/fifo_ptr.v" into library work
+INFO: [VRFC 10-311] analyzing module fifo_ptr
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/prave/async_fifo/rtl/fifo_flags.v" into library work
+INFO: [VRFC 10-311] analyzing module fifo_flags
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/prave/async_fifo/rtl/async_fifo.v" into library work
+INFO: [VRFC 10-311] analyzing module async_fifo
+=== Compiling Testbench ===
+INFO: [VRFC 10-2263] Analyzing SystemVerilog file "C:/Users/prave/async_fifo/tb/async_fifo_tb.sv" into library work
+INFO: [VRFC 10-311] analyzing module async_fifo_tb
+ERROR: [VRFC 10-1412] syntax error near , [C:/Users/prave/async_fifo/tb/async_fifo_tb.sv:70]
+ERROR: [VRFC 10-2787] module async_fifo_tb ignored due to previous errors [C:/Users/prave/async_fifo/tb/async_fifo_tb.sv:3]
